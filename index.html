@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AquaSmart</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+</head>
+<body>
+    <!-- =====================================================
+         PANTALLA DE LOGIN
+         ===================================================== -->
+    <div class="login-container">
+        <div class="login-box">
+            <!-- Logo y título -->
+            <div class="login-logo">
+                <img src="assets/img/logo-aquasmart.png" alt="AquaSmart" style="width:180px; margin-bottom:1rem;">
+                <h1>AquaSmart</h1>
+                <p>Sistema Inteligente de Gestión de Agua Potable</p>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div id="loginError" class="login-error"></div>
+
+            <!-- Formulario de login -->
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" placeholder="admin@aguapotable.com" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <button class="btn btn-primary btn-full" id="btnLogin" onclick="iniciarSesion()">
+                Iniciar Sesión
+            </button>
+
+            <p style="text-align:center; margin-top:1.5rem; font-size:0.78rem; color:var(--text-light);">
+                Demo: admin@aguapotable.com / admin123
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // ---- LOGIN ----
+        // Permite hacer login con Enter
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') iniciarSesion();
+        });
+        document.getElementById('email').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') iniciarSesion();
+        });
+
+        /**
+         * Envía las credenciales al servidor PHP para autenticación
+         */
+        function iniciarSesion() {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const btn = document.getElementById('btnLogin');
+
+            // Validar campos vacíos
+            if (!email || !password) {
+                errorDiv.textContent = 'Por favor completa todos los campos';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Deshabilitar botón mientras procesa
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Verificando...';
+
+            // Enviar datos al backend
+            const formData = new FormData();
+            formData.append('action', 'login');
+            formData.append('email', email);
+            formData.append('password', password);
+
+            fetch('php/auth.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    errorDiv.textContent = data.mensaje;
+                    errorDiv.style.display = 'block';
+                } else {
+                    // Login exitoso: redirigir al dashboard
+                    errorDiv.style.display = 'none';
+                    window.location.href = 'dashboard.html';
+                }
+            })
+            .catch(err => {
+                errorDiv.textContent = 'Error de conexión. Verifica que el servidor esté activo.';
+                errorDiv.style.display = 'block';
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = 'Iniciar Sesión';
+            });
+        }
+    </script>
+</body>
+</html>

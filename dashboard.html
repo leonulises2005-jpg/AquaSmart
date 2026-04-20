@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AquaSmart</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+    <!-- Chart.js para gráficas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-layout">
+        <!-- =====================================================
+             SIDEBAR - Menú lateral
+             ===================================================== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C12 2 5 10.5 5 14.5C5 18.09 8.13 21 12 21C15.87 21 19 18.09 19 14.5C19 10.5 12 2 12 2Z"/></svg>
+                </div>
+                <div>
+                    <h2>AquaSmart</h2>
+                    <span>Panel de Control</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item active" data-section="dashboard" onclick="navigateTo('dashboard')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        Dashboard
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Gestión</div>
+                    <div class="nav-item" data-section="usuarios" onclick="navigateTo('usuarios')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                        Clientes
+                    </div>
+                    <div class="nav-item" data-section="consumos" onclick="navigateTo('consumos')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="10"/></svg>
+                        Consumos
+                    </div>
+                    <div class="nav-item" data-section="tanques" onclick="navigateTo('tanques')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/><path d="M12 4v16"/></svg>
+                        Tanques
+                    </div>
+                    <div class="nav-item" data-section="alertas" onclick="navigateTo('alertas')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Alertas
+                        <span class="badge" id="alertBadge">0</span>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="avatar" id="userAvatar">A</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Administrador</div>
+                        <div class="user-role" id="userRole">Admin</div>
+                    </div>
+                    <button class="btn-logout" onclick="cerrarSesion()" title="Cerrar sesión">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- =====================================================
+             CONTENIDO PRINCIPAL
+             ===================================================== -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div>
+                        <h1 id="pageTitle">Dashboard</h1>
+                        <p id="pageSubtitle">Resumen general del sistema</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <span class="header-date" id="headerDate"></span>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- =====================================================
+                     SECCIÓN: DASHBOARD
+                     ===================================================== -->
+                <section class="page-section active" id="section-dashboard">
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card water">
+                            <div class="kpi-header">
+                                <span class="label">Consumo Total</span>
+                                <div class="icon">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 2 5 10.5 5 14.5C5 18.09 8.13 21 12 21C15.87 21 19 18.09 19 14.5C19 10.5 12 2 12 2Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="kpi-value" id="kpiConsumo">--</div>
+                            <div class="kpi-sub">litros registrados</div>
+                        </div>
+                        <div class="kpi-card users">
+                            <div class="kpi-header">
+                                <span class="label">Clientes</span>
+                                <div class="icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                </div>
+                            </div>
+                            <div class="kpi-value" id="kpiUsuarios">--</div>
+                            <div class="kpi-sub">registrados activos</div>
+                        </div>
+                        <div class="kpi-card storage">
+                            <div class="kpi-header">
+                                <span class="label">Almacenamiento</span>
+                                <div class="icon">
+
+
+
+
+
+                                    
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+                                </div>
+                            </div>
+                            <div class="kpi-value" id="kpiAlmacen">--%</div>
+                            <div class="kpi-sub">nivel promedio</div>
+                        </div>
+                        <div class="kpi-card alerts">
+                            <div class="kpi-header">
+                                <span class="label">Alertas Activas</span>
+                                <div class="icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                </div>
+                            </div>
+                            <div class="kpi-value" id="kpiAlertas">--</div>
+                            <div class="kpi-sub">requieren atención</div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficas -->
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>⚡ Consumo en Tiempo Real</h3>
+                                <div style="display:flex;align-items:center;gap:0.5rem;">
+                                    <span class="sim-live-dot"></span>
+                                    <span style="font-size:0.8rem;color:var(--text-secondary);">Simulación cada 5 segundos</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="chartConsumoMensual"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3> Consumo por Zona</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="chartConsumoZona"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tanques + Alertas + Top consumidores -->
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3> Estado de Tanques</h3>
+                            </div>
+                            <div class="card-body" id="dashTanques"></div>
+                        </div>
+                        <div>
+                            <div class="card" style="margin-bottom:1.25rem;">
+                                <div class="card-header">
+                                    <h3> Alertas Recientes</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert-list" id="dashAlertas"></div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3> Mayor Consumo</h3>
+                                </div>
+                                <div class="card-body" id="dashTopConsumo"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =====================================================
+                     SECCIÓN: CLIENTES
+                     ===================================================== -->
+                <section class="page-section" id="section-usuarios">
+                    <div class="toolbar">
+                        <h2 style="font-size:1.1rem;">Gestión de Clientes</h2>
+                        <button class="btn btn-primary" onclick="modalUsuario()">+ Agregar Cliente</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>ID</th><th>Nombre</th><th>Zona</th><th>Medidor</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr>
+                                    </thead>
+                                    <tbody id="tablaUsuarios">
+                                        <tr><td colspan="7" style="text-align:center;padding:2rem;">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =====================================================
+                     SECCIÓN: CONSUMOS
+                     ===================================================== -->
+                <section class="page-section" id="section-consumos">
+                    <div class="toolbar">
+                        <h2 style="font-size:1.1rem;">Registro de Consumos</h2>
+                        <button class="btn btn-primary" onclick="modalConsumo()">+ Registrar Consumo</button>
+                    </div>
+
+                    <!-- Panel de Consumos en Tiempo Real -->
+                    <div class="card" style="margin-bottom:1.25rem;background:linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);border-left:4px solid #0077B6;">
+                        <div class="card-header">
+                            <h3> Consumos en Tiempo Real</h3>
+                            <div style="display:flex;align-items:center;gap:0.5rem;">
+                                <span class="sim-live-dot"></span>
+                                <span style="font-size:0.8rem;color:var(--text-secondary);">Basado en simulación actual</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="consumosTiempoReal">
+                                <div style="text-align:center;padding:2rem;color:var(--text-light);">
+                                    <p>Cargando datos de simulación...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="toolbar">
+                        <div class="toolbar-filters">
+                            <input type="date" id="filtroFechaInicio">
+                            <input type="date" id="filtroFechaFin">
+                            <select id="filtroZona"><option value="">Todas las zonas</option></select>
+                            <button class="btn btn-outline btn-sm" onclick="cargarConsumos()">Filtrar</button>
+                        </div>
+                    </div>
+                    <div class="card" style="margin-bottom:1.25rem;">
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>Fecha</th><th>Cliente</th><th>Medidor</th><th>Zona</th><th>Litros</th><th>Período</th><th>Acciones</th></tr>
+                                    </thead>
+                                    <tbody id="tablaConsumos">
+                                        <tr><td colspan="7" style="text-align:center;padding:2rem;">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3> Resumen por Cliente</h3></div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead><tr><th>Cliente</th><th>Zona</th><th>Registros</th><th>Total (L)</th><th>Promedio (L)</th></tr></thead>
+                                    <tbody id="tablaResumen"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =====================================================
+                     SECCIÓN: TANQUES
+                     ===================================================== -->
+                <section class="page-section" id="section-tanques">
+                    <div class="toolbar">
+                        <h2 style="font-size:1.1rem;">Gestión de Tanques</h2>
+                        <button class="btn btn-primary" onclick="modalTanque()">+ Agregar Tanque</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr><th>Nombre</th><th>Ubicación</th><th>Capacidad (L)</th><th>Nivel Actual</th><th>Estado</th><th>Acciones</th></tr>
+                                    </thead>
+                                    <tbody id="tablaTanques">
+                                        <tr><td colspan="6" style="text-align:center;padding:2rem;">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- =====================================================
+                     SECCIÓN: ALERTAS
+                     ===================================================== -->
+                <section class="page-section" id="section-alertas">
+                    <div class="toolbar">
+                        <h2 style="font-size:1.1rem;">Centro de Alertas</h2>
+                        <button class="btn btn-primary" onclick="modalAlerta()">+ Nueva Alerta</button>
+                    </div>
+                    <div class="alert-list" id="listaAlertas">
+                        <div style="text-align:center;padding:2rem;color:var(--text-light);">Cargando alertas...</div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- =====================================================
+         MODALES
+         ===================================================== -->
+    <!-- Modal: Cliente -->
+    <div class="modal-overlay" id="modalUsuario">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalUsuarioTitle">Agregar Cliente</h3>
+                <button class="modal-close" onclick="cerrarModal('modalUsuario')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="usuarioId">
+                <div class="form-group"><label>Nombre *</label><input type="text" id="usuarioNombre" placeholder="Nombre"></div>
+                <div class="form-group"><label>Apellido *</label><input type="text" id="usuarioApellido" placeholder="Apellido"></div>
+                <div class="form-group"><label>Dirección</label><input type="text" id="usuarioDireccion" placeholder="Dirección"></div>
+                <div class="form-group"><label>Zona</label>
+                    <select id="usuarioZona"><option value="">Seleccionar</option><option value="Centro">Centro</option><option value="Norte">Norte</option><option value="Sur">Sur</option><option value="Oriente">Oriente</option><option value="Poniente">Poniente</option></select>
+                </div>
+                <div class="form-group"><label>Teléfono</label><input type="tel" id="usuarioTelefono" placeholder="4521234567"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="usuarioEmail" placeholder="correo@ejemplo.com"></div>
+                <div class="form-group"><label>Medidor *</label><input type="text" id="usuarioMedidor" placeholder="MED-009"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalUsuario')">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarUsuario()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Consumo -->
+    <div class="modal-overlay" id="modalConsumo">
+        <div class="modal">
+            <div class="modal-header"><h3>Registrar Consumo</h3><button class="modal-close" onclick="cerrarModal('modalConsumo')">✕</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Cliente *</label><select id="consumoUsuario"><option value="">Seleccionar</option></select></div>
+                <div class="form-group"><label>Litros *</label><input type="number" id="consumoLitros" placeholder="Ej: 15000" min="0" step="100"><small id="consumoSugerencia" style="color:var(--text-light);font-size:0.8rem;margin-top:0.25rem;display:block;">Sugerencia basada en simulación: -- L</small></div>
+                <div class="form-group"><label>Fecha</label><input type="date" id="consumoFecha"></div>
+                <div class="form-group"><label>Período</label><input type="month" id="consumoPeriodo"></div>
+                <div class="form-group"><label>Observaciones</label><textarea id="consumoObservaciones" rows="2" placeholder="Notas opcionales"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalConsumo')">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarConsumo()">Registrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Tanque -->
+    <div class="modal-overlay" id="modalTanque">
+        <div class="modal">
+            <div class="modal-header"><h3 id="modalTanqueTitle">Agregar Tanque</h3><button class="modal-close" onclick="cerrarModal('modalTanque')">✕</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="tanqueId">
+                <div class="form-group"><label>Nombre *</label><input type="text" id="tanqueNombre" placeholder="Ej: Tanque Principal"></div>
+                <div class="form-group"><label>Ubicación</label><input type="text" id="tanqueUbicacion" placeholder="Ej: Cerro del Agua"></div>
+                <div class="form-group"><label>Capacidad (litros) *</label><input type="number" id="tanqueCapacidad" placeholder="500000" min="0"></div>
+                <div class="form-group"><label>Nivel actual (litros)</label><input type="number" id="tanqueNivel" placeholder="250000" min="0"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalTanque')">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarTanque()">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Muestreo de Calidad -->
+    <div class="modal-overlay" id="modalMuestreo">
+        <div class="modal">
+            <div class="modal-header"><h3>Nuevo Muestreo de Calidad</h3><button class="modal-close" onclick="cerrarModal('modalMuestreo')">✕</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Tanque *</label><select id="muestreoTanque"><option value="">Seleccionar</option></select></div>
+                <div class="form-group"><label>pH *</label><input type="number" id="muestreoPH" placeholder="Ej: 7.2" min="0" max="14" step="0.01"></div>
+                <div class="form-group"><label>Cloro residual (mg/L) *</label><input type="number" id="muestreoCloro" placeholder="Ej: 0.8" min="0" step="0.01"></div>
+                <div class="form-group"><label>Turbidez (NTU) *</label><input type="number" id="muestreoTurbidez" placeholder="Ej: 1.5" min="0" step="0.01"></div>
+                <div class="form-group"><label>Temperatura del agua (°C)</label><input type="number" id="muestreoTemp" placeholder="Ej: 18.5" step="0.1"></div>
+                <div class="form-group"><label>Coliformes</label>
+                    <select id="muestreoColiformes"><option value="0">Ausente</option><option value="1">Presente</option></select>
+                </div>
+                <div class="form-group"><label>Observaciones</label><textarea id="muestreoObs" rows="2" placeholder="Notas del muestreo"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalMuestreo')">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarMuestreo()">Registrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Alerta -->
+    <div class="modal-overlay" id="modalAlerta">
+        <div class="modal">
+            <div class="modal-header"><h3>Nueva Alerta</h3><button class="modal-close" onclick="cerrarModal('modalAlerta')">✕</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label>Tipo *</label>
+                    <select id="alertaTipo">
+                        <option value="general">General</option>
+                        <option value="consumo_alto">Consumo Alto</option>
+                        <option value="nivel_bajo">Nivel Bajo</option>
+                        <option value="fuga">Fuga</option>
+                        <option value="mantenimiento">Mantenimiento</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Título *</label><input type="text" id="alertaTitulo" placeholder="Título de la alerta"></div>
+                <div class="form-group"><label>Descripción</label><textarea id="alertaDescripcion" rows="3" placeholder="Descripción detallada"></textarea></div>
+                <div class="form-group"><label>Prioridad</label>
+                    <select id="alertaPrioridad"><option value="baja">Baja</option><option value="media" selected>Media</option><option value="alta">Alta</option><option value="critica">Crítica</option></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalAlerta')">Cancelar</button>
+                <button class="btn btn-primary" onclick="guardarAlerta()">Crear Alerta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Actualizar Nivel -->
+    <div class="modal-overlay" id="modalNivel">
+        <div class="modal">
+            <div class="modal-header"><h3>Actualizar Nivel</h3><button class="modal-close" onclick="cerrarModal('modalNivel')">✕</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="nivelTanqueId">
+                <p id="nivelTanqueInfo" style="margin-bottom:1rem;color:var(--text-secondary);font-size:0.9rem;"></p>
+                <div class="form-group"><label>Nuevo nivel (litros)</label><input type="number" id="nivelNuevo" placeholder="Litros" min="0"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalNivel')">Cancelar</button>
+                <button class="btn btn-primary" onclick="actualizarNivelTanque()">Actualizar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

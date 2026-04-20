@@ -22,7 +22,7 @@ agua-potable/
 ├── php/
 │   ├── auth.php            ← Login, logout, verificar sesión
 │   ├── dashboard.php       ← KPIs y estadísticas
-│   ├── usuarios.php        ← CRUD usuarios
+│   ├── usuarios.php        ← CRUD clientes
 │   ├── consumos.php        ← CRUD consumos
 │   ├── tanques.php         ← CRUD tanques
 │   ├── calidad.php         ← Monitoreo de calidad del agua
@@ -52,8 +52,8 @@ agua-potable/
 | Módulo | Descripción |
 |---|---|
 | **Dashboard** | KPIs, gráficas de consumo, estado de tanques, calidad del agua, alertas, top consumidores |
-| **Usuarios** | CRUD completo de usuarios consumidores con medidor |
-| **Consumos** | Registro de consumo por usuario, filtros por fecha/zona, resumen estadístico |
+| **Clientes** | CRUD completo de clientes consumidores con medidor |
+| **Consumos** | Registro de consumo por cliente, filtros por fecha/zona, resumen estadístico |
 | **Tanques** | Gestión de tanques, actualización de niveles, alertas automáticas |
 | **Calidad del Agua** | Muestreos de pH, cloro, turbidez, coliformes. Alertas automáticas si el agua no es potable |
 | **Alertas** | Tipos: consumo alto, nivel bajo, calidad del agua, fuga, mantenimiento |
@@ -88,4 +88,5 @@ define('DB_NAME', 'agua_potable');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 ```
+# AquaSmart
 # AquaSmart
