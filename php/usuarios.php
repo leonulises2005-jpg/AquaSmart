@@ -1,6 +1,6 @@
 <?php
 // =====================================================
-// usuarios.php - CRUD de usuarios consumidores
+// usuarios.php - CRUD de clientes consumidores
 // =====================================================
 session_start();
 header('Content-Type: application/json');
@@ -39,7 +39,7 @@ function listarUsuarios($pdo) {
         $stmt = $pdo->query("SELECT * FROM usuarios ORDER BY id DESC");
         echo json_encode(['error' => false, 'datos' => $stmt->fetchAll()]);
     } catch (PDOException $e) {
-        echo json_encode(['error' => true, 'mensaje' => 'Error al listar usuarios']);
+        echo json_encode(['error' => true, 'mensaje' => 'Error al listar clientes']);
     }
 }
 
@@ -52,10 +52,10 @@ function obtenerUsuario($pdo) {
         if ($usuario) {
             echo json_encode(['error' => false, 'datos' => $usuario]);
         } else {
-            echo json_encode(['error' => true, 'mensaje' => 'Usuario no encontrado']);
+            echo json_encode(['error' => true, 'mensaje' => 'Cliente no encontrado']);
         }
     } catch (PDOException $e) {
-        echo json_encode(['error' => true, 'mensaje' => 'Error al obtener usuario']);
+        echo json_encode(['error' => true, 'mensaje' => 'Error al obtener cliente']);
     }
 }
 
@@ -76,9 +76,9 @@ function agregarUsuario($pdo) {
     try {
         $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, apellido, direccion, zona, telefono, email, medidor) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([$nombre, $apellido, $direccion, $zona, $telefono, $email, $medidor]);
-        echo json_encode(['error' => false, 'mensaje' => 'Usuario agregado correctamente', 'id' => $pdo->lastInsertId()]);
+        echo json_encode(['error' => false, 'mensaje' => 'Cliente agregado correctamente', 'id' => $pdo->lastInsertId()]);
     } catch (PDOException $e) {
-        $msg = (strpos($e->getMessage(), 'Duplicate') !== false) ? 'El número de medidor ya existe' : 'Error al agregar usuario';
+        $msg = (strpos($e->getMessage(), 'Duplicate') !== false) ? 'El número de medidor ya existe' : 'Error al agregar cliente';
         echo json_encode(['error' => true, 'mensaje' => $msg]);
     }
 }
@@ -102,9 +102,9 @@ function editarUsuario($pdo) {
     try {
         $stmt = $pdo->prepare("UPDATE usuarios SET nombre=?, apellido=?, direccion=?, zona=?, telefono=?, email=?, medidor=?, activo=? WHERE id=?");
         $stmt->execute([$nombre, $apellido, $direccion, $zona, $telefono, $email, $medidor, $activo, $id]);
-        echo json_encode(['error' => false, 'mensaje' => 'Usuario actualizado correctamente']);
+        echo json_encode(['error' => false, 'mensaje' => 'Cliente actualizado correctamente']);
     } catch (PDOException $e) {
-        echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar usuario']);
+        echo json_encode(['error' => true, 'mensaje' => 'Error al actualizar cliente']);
     }
 }
 
@@ -118,7 +118,7 @@ function eliminarUsuario($pdo) {
     try {
         $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = ?");
         $stmt->execute([$id]);
-        echo json_encode(['error' => false, 'mensaje' => 'Usuario eliminado correctamente']);
+        echo json_encode(['error' => false, 'mensaje' => 'Cliente eliminado correctamente']);
     } catch (PDOException $e) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al eliminar. Puede tener consumos asociados.']);
     }

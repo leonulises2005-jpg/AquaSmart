@@ -14,6 +14,9 @@ switch ($action) {
     case 'login':
         login($pdo);
         break;
+    case 'register':
+        registerUser($pdo);
+        break;
     case 'logout':
         logout();
         break;
@@ -63,6 +66,48 @@ function login($pdo) {
         }
     } catch (PDOException $e) {
         echo json_encode(['error' => true, 'mensaje' => 'Error del servidor']);
+    }
+}
+
+/**
+ * Registrar un nuevo usuario administrador
+ */
+function registerUser($pdo) {
+    $nombre = trim($_POST['nombre'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $passwordConfirm = $_POST['password_confirm'] ?? '';
+
+    if (empty($nombre) || empty($email) || empty($password) || empty($passwordConfirm)) {
+        echo json_encode(['error' => true, 'mensaje' => 'Completa todos los campos para registrarte']);
+        return;
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['error' => true, 'mensaje' => 'Ingresa un correo electrónico válido']);
+        return;
+    }
+
+    if ($password !== $passwordConfirm) {
+        echo json_encode(['error' => true, 'mensaje' => 'Las contraseñas no coinciden']);
+        return;
+    }
+
+    try {
+        $stmt = $pdo->prepare("SELECT id FROM administradores WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetch()) {
+            echo json_encode(['error' => true, 'mensaje' => 'El correo ya está registrado']);
+            return;
+        }
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("INSERT INTO administradores (nombre, email, password, rol, activo) VALUES (?, ?, ?, 'operador', 1)");
+        $stmt->execute([$nombre, $email, $passwordHash]);
+
+        echo json_encode(['error' => false, 'mensaje' => 'Registro exitoso. Ya puedes iniciar sesión.']);
+    } catch (PDOException $e) {
+        echo json_encode(['error' => true, 'mensaje' => 'Error al registrar usuario']);
     }
 }
 

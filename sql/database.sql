@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS administradores (
 ) ENGINE=InnoDB;
 
 -- =====================================================
--- Tabla: usuarios (consumidores de agua)
+-- Tabla: clientes (consumidores de agua)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -100,7 +100,7 @@ INSERT INTO administradores (nombre, email, password, rol) VALUES
 ('Administrador', 'admin@aguapotable.com', '$2y$10$YEhPZG0xMjNhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ejAxMjM', 'admin'),
 ('Operador Demo', 'operador@aguapotable.com', '$2y$10$YEhPZG0xMjNhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ejAxMjM', 'operador');
 
--- Usuarios consumidores
+-- Clientes consumidores
 INSERT INTO usuarios (nombre, apellido, direccion, zona, telefono, email, medidor) VALUES
 ('Juan', 'Pérez García', 'Calle Hidalgo #120', 'Centro', '4521234567', 'juan.perez@email.com', 'MED-001'),
 ('María', 'López Hernández', 'Av. Reforma #45', 'Norte', '4529876543', 'maria.lopez@email.com', 'MED-002'),
@@ -156,8 +156,8 @@ INSERT INTO calidad_agua (tanque_id, ph, cloro_residual, turbidez, temperatura_a
 -- Alertas (100% enfocadas en agua potable)
 INSERT INTO alertas (tipo, titulo, descripcion, prioridad, activa) VALUES
 ('nivel_bajo', 'Tanque Sur en nivel bajo', 'El Tanque Sur ha descendido al 20% de capacidad. Se recomienda programar abastecimiento.', 'alta', 1),
-('consumo_alto', 'Consumo excesivo - MED-003', 'El usuario Carlos Ramírez presenta consumo 60% superior al promedio. Posible fuga.', 'alta', 1),
+('consumo_alto', 'Consumo excesivo - MED-003', 'El cliente Carlos Ramírez presenta consumo 60% superior al promedio. Posible fuga.', 'alta', 1),
 ('calidad_agua', 'Calidad deficiente - Tanque Oriente', 'Se detectaron coliformes en el Tanque Oriente. Se suspendió distribución y se aplicó cloración de choque.', 'critica', 1),
 ('nivel_bajo', 'Tanque Oriente en nivel crítico', 'El Tanque Oriente ha alcanzado nivel crítico (7.5%). Acción inmediata requerida.', 'critica', 1),
-('fuga', 'Posible fuga - Zona Sur', 'Consumo anormal en zona Sur sin correlación con usuarios registrados. Revisar tubería principal.', 'alta', 1),
+('fuga', 'Posible fuga - Zona Sur', 'Consumo anormal en zona Sur sin correlación con clientes registrados. Revisar tubería principal.', 'alta', 1),
 ('mantenimiento', 'Mantenimiento programado', 'Revisión trimestral de bombas - Tanque Principal. Programado para el próximo lunes.', 'baja', 0);

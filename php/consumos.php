@@ -75,7 +75,7 @@ function agregarConsumo($pdo) {
     $observaciones = trim($_POST['observaciones'] ?? '');
 
     if ($usuario_id === 0 || $litros <= 0) {
-        echo json_encode(['error' => true, 'mensaje' => 'Usuario y litros son obligatorios']);
+        echo json_encode(['error' => true, 'mensaje' => 'Cliente y litros son obligatorios']);
         return;
     }
 
@@ -92,7 +92,7 @@ function agregarConsumo($pdo) {
             $stmtA = $pdo->prepare("INSERT INTO alertas (tipo, titulo, descripcion, prioridad) VALUES ('consumo_alto', ?, ?, 'alta')");
             $stmtA->execute([
                 "Consumo alto - {$usr['medidor']}",
-                "El usuario {$usr['nombre']} {$usr['apellido']} registró {$litros} litros, superando el umbral de 20,000L."
+                "El cliente {$usr['nombre']} {$usr['apellido']} registró {$litros} litros, superando el umbral de 20,000L."
             ]);
         }
 

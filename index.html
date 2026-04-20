@@ -36,6 +36,37 @@
                 Iniciar Sesión
             </button>
 
+            <p style="text-align:center; margin-top:1rem;">
+                <a href="#" id="showRegisterLink" onclick="mostrarRegistro(); return false;">¿No tienes cuenta? Regístrate</a>
+            </p>
+
+            <div id="registerSection" style="display:none; margin-top:1.5rem;">
+                <hr style="margin:1.5rem 0; border-color: rgba(255,255,255,0.1);">
+                <h2 style="font-size:1rem; text-align:center; margin-bottom:1rem;">Registrar nueva cuenta</h2>
+                <div class="form-group">
+                    <label for="registerName">Nombre completo</label>
+                    <input type="text" id="registerName" placeholder="Tu nombre" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Correo electrónico</label>
+                    <input type="email" id="registerEmail" placeholder="correo@ejemplo.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input type="password" id="registerPassword" placeholder="••••••••" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                    <label for="registerPasswordConfirm">Confirmar contraseña</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="••••••••" autocomplete="new-password">
+                </div>
+                <button class="btn btn-secondary btn-full" id="btnRegister" onclick="registrarUsuario()">
+                    Registrar usuario
+                </button>
+                <p style="text-align:center; margin-top:1rem;">
+                    <a href="#" onclick="mostrarLogin(); return false;">Volver al login</a>
+                </p>
+            </div>
+
             <p style="text-align:center; margin-top:1.5rem; font-size:0.78rem; color:var(--text-light);">
                 Demo: admin@aguapotable.com / admin123
             </p>
@@ -100,6 +131,78 @@
             .finally(() => {
                 btn.disabled = false;
                 btn.innerHTML = 'Iniciar Sesión';
+            });
+        }
+
+        function mostrarRegistro() {
+            document.getElementById('registerSection').style.display = 'block';
+            document.getElementById('btnLogin').style.display = 'none';
+            document.getElementById('showRegisterLink').style.display = 'none';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function mostrarLogin() {
+            document.getElementById('registerSection').style.display = 'none';
+            document.getElementById('btnLogin').style.display = 'block';
+            document.getElementById('showRegisterLink').style.display = 'inline';
+            document.getElementById('loginError').textContent = '';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function registrarUsuario() {
+            const nombre = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+            const errorDiv = document.getElementById('loginError');
+            const btn = document.getElementById('btnRegister');
+
+            if (!nombre || !email || !password || !passwordConfirm) {
+                errorDiv.textContent = 'Por favor completa todos los campos para registrarte.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                errorDiv.textContent = 'Las contraseñas no coinciden.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Registrando...';
+
+            const formData = new FormData();
+            formData.append('action', 'register');
+            formData.append('nombre', nombre);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('password_confirm', passwordConfirm);
+
+            fetch('php/auth.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                errorDiv.textContent = data.mensaje;
+                errorDiv.style.display = 'block';
+                if (!data.error) {
+                    mostrarLogin();
+                    document.getElementById('registerName').value = '';
+                    document.getElementById('registerEmail').value = '';
+                    document.getElementById('registerPassword').value = '';
+                    document.getElementById('registerPasswordConfirm').value = '';
+                }
+            })
+            .catch(err => {
+                errorDiv.textContent = 'Error de conexión. Verifica que el servidor esté activo.';
+                errorDiv.style.display = 'block';
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = 'Registrar usuario';
             });
         }
     </script>

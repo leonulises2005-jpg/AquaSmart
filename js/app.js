@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * Verifica si el usuario tiene sesión activa
+ * Verifica si el cliente tiene sesión activa
  */
 function verificarSesion() {
     fetch('php/auth.php?action=check')
@@ -69,7 +69,7 @@ function navigateTo(section) {
     // Títulos del header
     const titles = {
         dashboard: ['Dashboard', 'Resumen general del sistema'],
-        usuarios: ['Usuarios', 'Gestión de usuarios consumidores'],
+        usuarios: ['Clientes', 'Gestión de clientes consumidores'],
         consumos: ['Consumos', 'Registro y control de consumo de agua'],
         tanques: ['Tanques', 'Monitoreo de almacenamiento'],
         alertas: ['Alertas', 'Centro de alertas y notificaciones']
@@ -360,7 +360,7 @@ function renderTopConsumidores(top) {
 }
 
 // =====================================================
-// MÓDULO: USUARIOS
+// MÓDULO: CLIENTES
 // =====================================================
 function cargarUsuarios() {
     fetch('php/usuarios.php?action=listar')
@@ -368,7 +368,7 @@ function cargarUsuarios() {
         .then(data => {
             if (data.error) return;
             const tbody = document.getElementById('tablaUsuarios');
-            if (data.datos.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay usuarios</td></tr>'; return; }
+            if (data.datos.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No hay clientes</td></tr>'; return; }
             tbody.innerHTML = data.datos.map(u => `
                 <tr>
                     <td>${u.id}</td>
@@ -387,7 +387,7 @@ function cargarUsuarios() {
 }
 
 function modalUsuario() {
-    document.getElementById('modalUsuarioTitle').textContent = 'Agregar Usuario';
+    document.getElementById('modalUsuarioTitle').textContent = 'Agregar Cliente';
     document.getElementById('usuarioId').value = '';
     document.getElementById('usuarioNombre').value = '';
     document.getElementById('usuarioApellido').value = '';
@@ -405,7 +405,7 @@ function editarUsuario(id) {
         .then(data => {
             if (data.error) { showToast(data.mensaje, 'error'); return; }
             const u = data.datos;
-            document.getElementById('modalUsuarioTitle').textContent = 'Editar Usuario';
+            document.getElementById('modalUsuarioTitle').textContent = 'Editar Cliente';
             document.getElementById('usuarioId').value = u.id;
             document.getElementById('usuarioNombre').value = u.nombre;
             document.getElementById('usuarioApellido').value = u.apellido;
@@ -441,7 +441,7 @@ function guardarUsuario() {
 }
 
 function eliminarUsuario(id, nombre) {
-    if (!confirm('¿Eliminar al usuario "' + nombre + '"? Se borrarán sus registros de consumo.')) return;
+    if (!confirm('¿Eliminar al cliente "' + nombre + '"? Se borrarán sus registros de consumo.')) return;
     const formData = new FormData();
     formData.append('action', 'eliminar');
     formData.append('id', id);
@@ -515,7 +515,7 @@ function modalConsumo() {
         .then(r => r.json())
         .then(data => {
             const select = document.getElementById('consumoUsuario');
-            select.innerHTML = '<option value="">Seleccionar usuario</option>';
+            select.innerHTML = '<option value="">Seleccionar cliente</option>';
             if (!data.error) data.datos.forEach(u => { select.innerHTML += `<option value="${u.id}" data-zona="${u.zona}">${u.nombre} ${u.apellido} (${u.medidor})</option>`; });
 
             // Agregar event listener para sugerencia
@@ -530,7 +530,7 @@ function modalConsumo() {
 }
 
 /**
- * Actualiza la sugerencia de litros basada en la zona del usuario y la simulación
+ * Actualiza la sugerencia de litros basada en la zona del cliente y la simulación
  */
 function actualizarSugerenciaConsumo() {
     const select = document.getElementById('consumoUsuario');
@@ -545,9 +545,9 @@ function actualizarSugerenciaConsumo() {
 
     // Obtener flujo actual de la zona desde variables globales
     const flujo = simFlujosZonas[zona] || 0;
-    // Estimar consumo diario: flujo * 60 min * 24 horas / número de usuarios en zona (aprox)
+    // Estimar consumo diario: flujo * 60 min * 24 horas / número de clientes en zona (aprox)
     // Para simplificar, asumir un consumo diario basado en flujo
-    const consumoDiarioEstimado = Math.round(flujo * 60 * 24 * 0.1); // 10% del flujo total diario por usuario
+    const consumoDiarioEstimado = Math.round(flujo * 60 * 24 * 0.1); // 10% del flujo total diario por cliente
     sugerenciaElem.textContent = `Sugerencia basada en simulación: ${consumoDiarioEstimado.toLocaleString()} L (diario)`;
 }
 
