@@ -1,6 +1,6 @@
 // =====================================================
-// app.js - Lógica principal del Sistema de Gestión de Agua Potable
-// 100% enfocado en agua potable — sin clima ni APIs externas
+// conjunto de reglas, protocolos y herramientas 
+// que permite que dos aplicaciones de software se comuniquen entre sí
 // =====================================================
 
 // Variables globales para gráficas
