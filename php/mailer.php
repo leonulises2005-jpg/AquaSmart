@@ -13,7 +13,7 @@ require_once __DIR__ . '/../config/database.php';
 function enviarEmailAlerta($titulo, $descripcion, $prioridad) {
     // 1. Configuración del destinatario
     // Por defecto usamos el admin configurado en el sistema
-    $destinatario = "admin@aguapotable.com"; // CAMBIA ESTO por tu correo real
+    $destinatario = "argometros@gmail.com"; // CAMBIA ESTO por tu correo real
     
     // 2. Preparar el asunto y cuerpo
     $asunto = "⚠️ AQUASMART ALERTA [" . strtoupper($prioridad) . "]: " . $titulo;
