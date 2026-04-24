@@ -11,6 +11,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/mailer.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? 'listar';
 
@@ -89,11 +90,14 @@ function agregarConsumo($pdo) {
             $stmtU->execute([$usuario_id]);
             $usr = $stmtU->fetch();
             
+            $tituloA = "Consumo alto - {$usr['medidor']}";
+            $descA = "El cliente {$usr['nombre']} {$usr['apellido']} registró {$litros} litros, superando el umbral de 20,000L.";
+
             $stmtA = $pdo->prepare("INSERT INTO alertas (tipo, titulo, descripcion, prioridad) VALUES ('consumo_alto', ?, ?, 'alta')");
-            $stmtA->execute([
-                "Consumo alto - {$usr['medidor']}",
-                "El cliente {$usr['nombre']} {$usr['apellido']} registró {$litros} litros, superando el umbral de 20,000L."
-            ]);
+            $stmtA->execute([$tituloA, $descA]);
+
+            // Enviar notificación por email
+            enviarEmailAlerta($tituloA, $descA, 'alta');
         }
 
         echo json_encode(['error' => false, 'mensaje' => 'Consumo registrado correctamente']);
