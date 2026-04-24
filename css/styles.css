@@ -77,7 +77,9 @@ body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: 
 .login-error { background: #FEF2F2; border: 1px solid #FCA5A5; color: var(--accent-danger); padding: 0.7rem 1rem; border-radius: var(--radius-sm); font-size: 0.85rem; margin-bottom: 1rem; display: none; text-align: center; }
 
 /* ---- LAYOUT ---- */
-.app-layout { display: flex; min-height: 100vh; }
+.app-layout { 
+    min-height: 100vh;
+}
 
 /* Sidebar */
 .sidebar { width: var(--sidebar-width); background: var(--bg-sidebar); position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; transition: var(--transition); overflow-y: auto; }
@@ -109,7 +111,12 @@ body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: 
 .btn-logout svg { width: 18px; height: 18px; }
 
 /* Main content */
-.main-content { margin-left: var(--sidebar-width); flex: 1; min-height: 100vh; transition: var(--transition); }
+.main-content { 
+    margin-left: var(--sidebar-width); 
+    width: auto;
+    min-height: 100vh; 
+    transition: var(--transition); 
+}
 .top-header { height: var(--header-height); background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
 .header-left { display: flex; align-items: center; gap: 1rem; }
 .header-left h1 { font-size: 1.15rem; font-weight: 700; margin: 0; }
@@ -353,7 +360,7 @@ table tbody tr:last-child td { border-bottom: none; }
 .sim-s-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
 
 /* ---- RESPONSIVE ---- */
-@media (max-width: 1024px) { 
+@media (max-width: 1100px) { 
     .grid-2, .grid-3 { grid-template-columns: 1fr; } 
 }
 
@@ -369,8 +376,8 @@ table tbody tr:last-child td { border-bottom: none; }
     .header-right { display: none; }
 
     .page-content { padding: 1rem; }
-    .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-    .kpi-value { font-size: 1.4rem; }
+    .kpi-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+    .kpi-value { font-size: 1.6rem; }
     
     .sim-total-bar { flex-direction: column; align-items: stretch; gap: 0.75rem; }
     .sim-total-left { justify-content: center; }
