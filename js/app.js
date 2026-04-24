@@ -94,11 +94,17 @@ function navigateTo(section) {
     }
 
     // Cerrar sidebar en móvil
-    document.getElementById('sidebar').classList.remove('open');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
 }
 
 function toggleSidebar() {
-    document.getElementById('sidebar').classList.toggle('open');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
 }
 
 function cerrarSesion() {
