@@ -82,7 +82,25 @@ body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: 
 }
 
 /* Sidebar */
-.sidebar { width: var(--sidebar-width); background: var(--bg-sidebar); position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; display: flex; flex-direction: column; transition: var(--transition); overflow-y: auto; }
+.sidebar { 
+    width: var(--sidebar-width); 
+    background: var(--bg-sidebar); 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    bottom: 0; 
+    z-index: 100; 
+    display: flex; 
+    flex-direction: column; 
+    transition: var(--transition); 
+    overflow-y: auto; 
+    transform: translateX(-100%); /* Hidden by default (Mobile First) */
+}
+.sidebar.open { 
+    transform: translateX(0); 
+    box-shadow: 10px 0 30px rgba(0,0,0,0.3); 
+}
+
 .sidebar-brand { padding: 1.5rem 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 0.75rem; }
 .sidebar-brand .brand-logo { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; flex-shrink: 0; filter: brightness(1.1); }
 .sidebar-brand .brand-icon { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -112,22 +130,36 @@ body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: 
 
 /* Main content */
 .main-content { 
-    margin-left: var(--sidebar-width); 
-    width: auto;
+    margin-left: 0; /* No margin by default (Mobile First) */
+    width: 100%;
     min-height: 100vh; 
     transition: var(--transition); 
 }
-.top-header { height: var(--header-height); background: var(--bg-card); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow-sm); }
+
+.top-header { 
+    height: var(--header-height); 
+    background: var(--bg-card); 
+    border-bottom: 1px solid var(--border); 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 1rem; 
+    position: sticky; 
+    top: 0; 
+    z-index: 50; 
+    box-shadow: var(--shadow-sm); 
+}
 .header-left { display: flex; align-items: center; gap: 1rem; }
-.header-left h1 { font-size: 1.15rem; font-weight: 700; margin: 0; }
-.header-left p { font-size: 0.8rem; color: var(--text-secondary); margin: 0; }
-.menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--text-primary); border-radius: 8px; transition: var(--transition); }
+.header-left h1 { font-size: 1rem; font-weight: 700; margin: 0; }
+.header-left p { display: none; } /* Hidden on mobile */
+.menu-toggle { display: block; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--text-primary); border-radius: 8px; transition: var(--transition); }
 .menu-toggle:hover { background: var(--bg-body); }
 .menu-toggle svg { width: 24px; height: 24px; }
-.header-right { display: flex; align-items: center; gap: 1rem; }
+.header-right { display: none; } /* Hidden on mobile */
 .header-date { font-size: 0.82rem; color: var(--text-secondary); font-weight: 500; }
 
-.page-content { padding: 1.5rem 2rem; }
+.page-content { padding: 1rem; }
+
 .page-section { display: none; }
 .page-section.active { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
@@ -161,8 +193,7 @@ body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: 
 .card-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
 .card-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
 .card-body { padding: 1.25rem; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+.grid-2, .grid-3 { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
 
 /* =====================================================
    WATER QUALITY PANEL (reemplaza el panel de clima)
@@ -359,26 +390,23 @@ table tbody tr:last-child td { border-bottom: none; }
 .sim-s-label { font-size: 0.72rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
 .sim-s-value { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--text-primary); }
 
-/* ---- RESPONSIVE ---- */
-@media (max-width: 1100px) { 
-    .grid-2, .grid-3 { grid-template-columns: 1fr; } 
+/* ---- RESPONSIVE (Desktop First -> Now Mobile First) ---- */
+@media (min-width: 1025px) {
+    .sidebar { transform: translateX(0); }
+    .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
+    .menu-toggle { display: none; }
+    .top-header { padding: 0 2rem; }
+    .header-left h1 { font-size: 1.15rem; }
+    .header-left p { display: block; }
+    .header-right { display: flex; }
+    .page-content { padding: 1.5rem 2rem; }
+    
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .kpi-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 }
 
 @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); width: 280px; }
-    .sidebar.open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.3); }
-    .main-content { margin-left: 0; }
-    .menu-toggle { display: block; }
-    
-    .top-header { padding: 0 1rem; }
-    .header-left h1 { font-size: 1rem; }
-    .header-left p { display: none; }
-    .header-right { display: none; }
-
-    .page-content { padding: 1rem; }
-    .kpi-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-    .kpi-value { font-size: 1.6rem; }
-    
     .sim-total-bar { flex-direction: column; align-items: stretch; gap: 0.75rem; }
     .sim-total-left { justify-content: center; }
     .sim-summary { grid-template-columns: repeat(3, 1fr); }
@@ -399,7 +427,6 @@ table tbody tr:last-child td { border-bottom: none; }
 }
 
 @media (max-width: 480px) {
-    .kpi-grid { grid-template-columns: 1fr; }
     .sim-summary { grid-template-columns: 1fr; gap: 1rem; }
     .login-box { padding: 2rem 1.5rem; }
     .login-logo img { width: 140px !important; }
