@@ -1,17 +1,9 @@
 <?php
-// =====================================================
-// Configuración de conexión a la base de datos MySQL
-// =====================================================
-// INSTRUCCIONES:
-// 1. Asegúrate de que XAMPP esté corriendo (Apache + MySQL)
-// 2. Modifica los datos de conexión si es necesario
-// 3. Este archivo se incluye en todos los scripts PHP que necesitan BD
-
 // Datos de conexión - MODIFICA SEGÚN TU ENTORNO
-define('DB_HOST', 'localhost');      // Servidor MySQL
-define('DB_NAME', 'agua_potable');   // Nombre de la base de datos
-define('DB_USER', 'root');           // Usuario MySQL (en XAMPP por defecto es "root")
-define('DB_PASS', '');               // Contraseña MySQL (en XAMPP por defecto está vacía)
+define('DB_HOST', 'localhost');  
+define('DB_NAME', 'u675536408_db_I2BcR9Jc');
+define('DB_USER', 'u675536408_usr_I2BcR9Jc');
+define('DB_PASS', 'UhYLp>5=y');          
 define('DB_CHARSET', 'utf8mb4');
 
 // Crear conexión usando PDO (más seguro que mysqli)

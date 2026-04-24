@@ -1,6 +1,7 @@
 // =====================================================
 // conjunto de reglas, protocolos y herramientas 
 // que permite que dos aplicaciones de software se comuniquen entre sí
+// para intercambiar datos y funcionalidades
 // =====================================================
 
 // Variables globales para gráficas
