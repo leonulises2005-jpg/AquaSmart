@@ -9,9 +9,23 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
     <!-- Chart.js para gráficas -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0077B6',
+                        secondary: '#5A6B7F',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <div class="app-layout">
+<body class="overflow-x-hidden max-w-full bg-[#F0F4F8]">
+    <div class="app-layout min-h-screen">
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
         <!-- =====================================================
              SIDEBAR - Menú lateral
@@ -75,7 +89,7 @@
         <!-- =====================================================
              CONTENIDO PRINCIPAL
              ===================================================== -->
-        <main class="main-content">
+        <main class="main-content w-full overflow-x-hidden">
             <header class="top-header">
                 <div class="header-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">
@@ -96,8 +110,8 @@
                      SECCIÓN: DASHBOARD
                      ===================================================== -->
                 <section class="page-section active" id="section-dashboard">
-                    <!-- KPI Cards -->
-                    <div class="kpi-grid">
+                    <!-- KPI Cards: Portrait (1 col), Landscape (2 cols), Desktop (4 cols) -->
+                    <div class="grid grid-cols-1 landscape:grid-cols-2 md:grid-cols-4 gap-5 mb-6">
                         <div class="kpi-card water">
                             <div class="kpi-header">
                                 <span class="label">Consumo Total</span>
@@ -146,8 +160,8 @@
                         </div>
                     </div>
 
-                    <!-- Gráficas -->
-                    <div class="grid-2">
+                    <!-- Gráficas: Portrait (1 col), Desktop (2 cols) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                         <div class="card">
                             <div class="card-header">
                                 <h3>⚡ Consumo en Tiempo Real</h3>
@@ -174,8 +188,8 @@
                         </div>
                     </div>
 
-                    <!-- Tanques + Alertas + Top consumidores -->
-                    <div class="grid-2">
+                    <!-- Tanques + Alertas + Top consumidores: Portrait (1 col), Desktop (2 cols) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                         <div class="card">
                             <div class="card-header">
                                 <h3> Estado de Tanques</h3>
