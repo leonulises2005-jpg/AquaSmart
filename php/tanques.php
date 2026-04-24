@@ -11,7 +11,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/mailer.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? 'listar';
 
@@ -131,14 +130,11 @@ function actualizarNivel($pdo) {
             $t = $stmtT->fetch();
             
             $porcentaje = round(($nivel / $tanque['capacidad_litros']) * 100, 1);
-            $tituloA = "{$t['nombre']} en nivel crítico";
-            $descA = "El {$t['nombre']} ha alcanzado nivel crítico ({$porcentaje}%). Se requiere acción inmediata.";
-            
             $stmtA = $pdo->prepare("INSERT INTO alertas (tipo, titulo, descripcion, prioridad) VALUES ('nivel_bajo', ?, ?, 'critica')");
-            $stmtA->execute([$tituloA, $descA]);
-
-            // Enviar notificación por email
-            enviarEmailAlerta($tituloA, $descA, 'critica');
+            $stmtA->execute([
+                "{$t['nombre']} en nivel crítico",
+                "El {$t['nombre']} ha alcanzado nivel crítico ({$porcentaje}%). Se requiere acción inmediata."
+            ]);
         }
 
         echo json_encode(['error' => false, 'mensaje' => 'Nivel actualizado', 'estado' => $estado]);

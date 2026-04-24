@@ -11,7 +11,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 }
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/mailer.php';
 
 $action = $_POST['action'] ?? $_GET['action'] ?? 'listar';
 
@@ -62,10 +61,6 @@ function agregarAlerta($pdo) {
     try {
         $stmt = $pdo->prepare("INSERT INTO alertas (tipo, titulo, descripcion, prioridad) VALUES (?, ?, ?, ?)");
         $stmt->execute([$tipo, $titulo, $descripcion, $prioridad]);
-        
-        // Enviar notificación por email
-        enviarEmailAlerta($titulo, $descripcion, $prioridad);
-
         echo json_encode(['error' => false, 'mensaje' => 'Alerta creada correctamente']);
     } catch (PDOException $e) {
         echo json_encode(['error' => true, 'mensaje' => 'Error al crear alerta']);
